@@ -3,7 +3,7 @@ import { SchemaRegistryService } from '../schema-registry.service';
 import { KafkaService } from '../kafka.service';
 import { CustomizationEventDto } from './dto/customization-event.dto';
 import { v4 as uuidv4 } from 'uuid';
-import { Message } from 'kafkajs';
+import { IHeaders, Message } from 'kafkajs';
 
 @Injectable()
 export class CustomizationProducerService {
@@ -12,54 +12,43 @@ export class CustomizationProducerService {
     private readonly kafkaService: KafkaService,
   ) {}
 
-  async create(events: CustomizationEventDto[]) {
-    const messages = await this.buildMessages(
+  async create(events: CustomizationEventDto[], headers: IHeaders) {
+    const messages = await this.schemaRegistryService.build(
       'avro/customization/create_customization_event_dto.avsc',
-
       events,
+      headers,
     );
 
     this.kafkaService.sendMessage('catalog-input', messages);
   }
 
-  async delete(events: CustomizationEventDto[]) {
-    const messages = await this.buildMessages(
+  async delete(events: CustomizationEventDto[], headers: IHeaders) {
+    const messages = await this.schemaRegistryService.build(
       'avro/customization/delete_customization_event_dto.avsc',
       events,
+      headers,
     );
 
     this.kafkaService.sendMessage('catalog-input', messages);
   }
 
-  async patch(events: CustomizationEventDto[]) {
-    const messages = await this.buildMessages(
+  async patch(events: CustomizationEventDto[], headers: IHeaders) {
+    const messages = await this.schemaRegistryService.build(
       'avro/customization/patch_customization_event_dto.avsc',
       events,
+      headers,
     );
 
     this.kafkaService.sendMessage('catalog-input', messages);
   }
 
-  async update(events: CustomizationEventDto[]) {
-    const messages = await this.buildMessages(
+  async update(events: CustomizationEventDto[], headers: IHeaders) {
+    const messages = await this.schemaRegistryService.build(
       'avro/customization/update_customization_event_dto.avsc',
       events,
+      headers,
     );
 
     this.kafkaService.sendMessage('catalog-input', messages);
-  }
-
-  private buildMessages(
-    subject: string,
-    events: CustomizationEventDto[],
-  ): Promise<Message[]> {
-    return Promise.all(
-      events.map(async (event) => {
-        return {
-          key: uuidv4(),
-          value: await this.schemaRegistryService.encode(subject, event),
-        };
-      }),
-    );
   }
 }

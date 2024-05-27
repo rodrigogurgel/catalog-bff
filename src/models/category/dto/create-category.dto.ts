@@ -1,17 +1,20 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEnum,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsPositive,
   IsUUID,
+  Min,
 } from 'class-validator';
 import { StatusEnumDto } from '../../commom/dto/status.dto';
+import { v4 as uuidv4 } from 'uuid';
 
 export class CreateCategoryDto {
-  @ApiProperty()
+  @ApiProperty({ example: uuidv4() })
   @IsNotEmpty()
-  @IsUUID()
+  @IsUUID('4')
   categoryId: string;
 
   @ApiProperty()
@@ -23,8 +26,8 @@ export class CreateCategoryDto {
   @ApiProperty({ enum: StatusEnumDto })
   status: StatusEnumDto;
 
-  @IsNumber()
-  @IsPositive()
+  @Min(0)
+  @IsInt()
   @IsNotEmpty()
   @ApiProperty()
   index: number;

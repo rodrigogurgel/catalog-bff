@@ -3,6 +3,8 @@ import {
   readAVSCAsync,
 } from '@kafkajs/confluent-schema-registry';
 import { Injectable } from '@nestjs/common';
+import { IHeaders, Message } from 'kafkajs';
+import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class SchemaRegistryService {
@@ -18,5 +20,21 @@ export class SchemaRegistryService {
     const subject = `${schema.namespace}.${schema.name}`;
     const schemaId = await this.registry.getRegistryIdBySchema(subject, schema);
     return await this.registry.encode(schemaId, body);
+  }
+
+  async build(
+    subject: string,
+    events: any[],
+    headers: IHeaders = null,
+  ): Promise<Message[]> {
+    return Promise.all(
+      events.map(async (event) => {
+        return {
+          key: uuidv4(),
+          value: await this.encode(subject, event),
+          headers,
+        };
+      }),
+    );
   }
 }

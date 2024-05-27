@@ -53,10 +53,14 @@ export class ItemService {
       createItemDto,
     );
 
-    await this.itemProducerService.create([item]);
-    await this.optionProducerService.create(options);
-    await this.customizationProducerService.create(customizations);
-    await this.productProducerService.create(products);
+    const headers = {
+      correlationId: uuidv4(),
+    };
+
+    await this.itemProducerService.create([item], headers);
+    await this.optionProducerService.create(options, headers);
+    await this.customizationProducerService.create(customizations, headers);
+    await this.productProducerService.create(products, headers);
   }
 
   findAll() {

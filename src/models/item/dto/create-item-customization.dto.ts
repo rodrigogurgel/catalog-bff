@@ -1,13 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEnum,
-  IsInt,
-  IsNotEmpty,
-  IsNumber,
-  IsPositive,
-  IsUUID,
-  Min,
-} from 'class-validator';
+import { IsEnum, IsInt, IsNotEmpty, IsUUID, Min } from 'class-validator';
 import { StatusEnumDto } from 'src/models/commom/dto/status.dto';
 import { CreateItemOptionDto } from './create-item-option.dto';
 import { v4 as uuidv4 } from 'uuid';
