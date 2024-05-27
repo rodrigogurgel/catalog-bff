@@ -1,0 +1,19 @@
+{
+  "type": "record",
+  "name": "DeleteCategoryEventDTO",
+  "namespace": "br.com.rodrigogurgel.catalogservice.in.events.dto",
+  "fields": [
+    {
+      "name": "categoryId",
+      "type": [
+        "string"
+      ]
+    },
+    {
+      "name": "storeId",
+      "type": [
+        "string"
+      ]
+    }
+  ]
+}
